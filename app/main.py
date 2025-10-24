@@ -1,7 +1,11 @@
 # app/main.py
 import gradio as gr
-from src.inference import infer
 import os
+import sys
+
+# Ensure 'src' folder is in path for imports
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+from src.inference import infer
 
 def answer(image, question):
     if image is None or question.strip() == "":
@@ -14,8 +18,8 @@ def answer(image, question):
     result = infer(image, question, image_path=temp_path)
     return result.get("answer", "")
 
-# Absolute path for background image
-bg_path = os.path.abspath("app/static/bg.png").replace("\\", "/")
+# Background image path
+bg_path = os.path.join("app/static/bg.png").replace("\\", "/")
 
 # Custom CSS
 custom_css = f"""
@@ -25,56 +29,44 @@ body {{
     background-repeat: no-repeat;
     background-attachment: fixed;
 }}
-
-/* Centered layout and wide container */
 .gr-block {{
     max-width: 1200px;
     margin: auto;
-    padding-top: 30px;  /* Space below title */
+    padding-top: 30px;
 }}
-
-/* Make response text larger and box taller */
 #response-box textarea {{
     font-size: 18px;
     height: 250px !important;
     resize: none;
 }}
-
-/* Button row aligned to left */
 #button-row {{
     display: flex;
     justify-content: flex-start;
     gap: 15px;
     margin-top: 10px;
 }}
-
-/* Button styling */
 #submit-btn, #clear-btn {{
-    width: 240px !important;   /* Adjust horizontal length */
-    height: 45px !important;   /* Adjust vertical height */
+    width: 240px !important;
+    height: 45px !important;
     font-size: 20px !important;
     font-weight: bold;
     border-radius: 10px;
     flex: 0 0 auto !important;
 }}
-
 #submit-btn {{
     background-color: #FF7F0F !important;
     color: white !important;
 }}
-
 #clear-btn {{
     background-color: #555 !important;
     color: white !important;
 }}
-
-/* Hide entire footer */
 footer {{
     display: none !important;
 }}
 """
 
-# Styled title (Campus white, View orange)
+# Title HTML
 title_html = """
 <div style="text-align:center; font-size: 48px; font-weight:bold; margin-bottom:20px;">
     <span style="color:white;">Campus</span>
@@ -82,7 +74,7 @@ title_html = """
 </div>
 """
 
-# Build interface
+# Build Gradio interface
 with gr.Blocks(css=custom_css, title="CampusView") as iface:
     # Favicon
     gr.HTML('<link rel="icon" type="image/png" href="app/static/favicon.png">')
