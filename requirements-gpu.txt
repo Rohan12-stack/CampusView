@@ -2,7 +2,7 @@
 transformers>=4.30
 torch>=2.0.0  # or the proper CUDA build for your GPU
 torchvision
-gradio>=3.0
+gradio>=3.43.0
 pillow
 opencv-python
 pytesseract
