@@ -8,18 +8,12 @@ on:
 jobs:
   deploy:
     runs-on: ubuntu-latest
-
     steps:
-      - name: Checkout code
-        uses: actions/checkout@v3
+      - name: Checkout Repository
+        uses: actions/checkout@v4
 
-      - name: Setup Python
-        uses: actions/setup-python@v4
-        with:
-          python-version: "3.10"
-
-      - name: Install HF Hub
-        run: pip install huggingface_hub
+      - name: Install Hugging Face CLI
+        run: pip install -U huggingface_hub
 
       - name: Deploy to Hugging Face Space
         env:
@@ -27,16 +21,21 @@ jobs:
         run: |
           hf auth login --token "$HF_TOKEN"
 
-          # Clone space into /tmp folder (not inside repo)
+          echo "✅ Logged into Hugging Face"
+
           git clone https://huggingface.co/spaces/RohXn/CampusView /tmp/space
 
-          # Copy only necessary repo files into space
+          echo "📁 Copying project files to HF Space..."
           rsync -av --exclude='.git' ./ /tmp/space/
 
-          # Commit & push
           cd /tmp/space
           git config --global user.email "github-actions@github.com"
           git config --global user.name "GitHub Actions"
+
           git add .
-          git commit -m "Auto deploy" || echo "No changes to commit"
-          git push
+          git commit -m "Auto deploy" || echo "⚠️ No changes to commit"
+
+          echo "🚀 Pushing update..."
+          git push https://RohXn:$HF_TOKEN@huggingface.co/spaces/RohXn/CampusView
+
+          echo "✅ Deployment Completed Successfully!"
