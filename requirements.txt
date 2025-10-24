@@ -1,14 +1,7 @@
-# requirements.txt
 transformers>=4.30
 torch>=1.13
 torchvision
 gradio>=3.0
-pillow
-opencv-python
-pytesseract
-requests
-python-dotenv
-torchvision
 pillow
 opencv-python
 pytesseract
