@@ -8,3 +8,9 @@ opencv-python
 pytesseract
 requests
 python-dotenv
+torchvision
+pillow
+opencv-python
+pytesseract
+requests
+python-dotenv
