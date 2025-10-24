@@ -5,3 +5,9 @@ __pycache__/
 models/
 data/images/*
 *.pth
+venv/
+*.dll
+*.pyd
+*.exe
+*.so
+*.ipynb_checkpoints
