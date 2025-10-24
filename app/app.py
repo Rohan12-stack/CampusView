@@ -4,7 +4,7 @@ import os
 import sys
 
 # Ensure 'src' folder is in path for imports
-sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
 from src.inference import infer
 
 def answer(image, question):
@@ -101,4 +101,4 @@ with gr.Blocks(css=custom_css, title="CampusView") as iface:
     clear_btn.click(fn=clear_fields, inputs=None, outputs=[img_input, txt_input, output])
 
 if __name__ == "__main__":
-    iface.launch(share=True)
+    iface.launch()
