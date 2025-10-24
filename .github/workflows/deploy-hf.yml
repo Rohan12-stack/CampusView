@@ -1,4 +1,4 @@
-name: Deploy to Hugging Face Space
+name: Deploy to Hugging Face Spaces
 
 on:
   push:
@@ -9,33 +9,35 @@ jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
+      - name: Checkout repository
+        uses: actions/checkout@v3
 
-      - name: Install Hugging Face CLI
-        run: pip install -U huggingface_hub
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
 
-      - name: Deploy to Hugging Face Space
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+
+      - name: Authenticate with Hugging Face
         env:
           HF_TOKEN: ${{ secrets.CAMPUS_TOKEN }}
         run: |
+          pip install huggingface_hub
           hf auth login --token "$HF_TOKEN"
 
-          echo "✅ Logged into Hugging Face"
-
-          git clone https://huggingface.co/spaces/RohXn/CampusView /tmp/space
-
-          echo "📁 Copying project files to HF Space..."
-          rsync -av --exclude='.git' ./ /tmp/space/
-
-          cd /tmp/space
-          git config --global user.email "github-actions@github.com"
-          git config --global user.name "GitHub Actions"
-
+      - name: Push to Hugging Face Space
+        env:
+          HF_TOKEN: ${{ secrets.CAMPUS_TOKEN }}
+        run: |
+          git config --global user.name "github-actions"
+          git config --global user.email "github-actions@users.noreply.github.com"
+          git clone https://huggingface.co/spaces/RohXn/CampusView space_repo
+          rsync -av --exclude ".git" ./ space_repo/
+          cd space_repo
           git add .
-          git commit -m "Auto deploy" || echo "⚠️ No changes to commit"
-
-          echo "🚀 Pushing update..."
-          git push https://RohXn:$HF_TOKEN@huggingface.co/spaces/RohXn/CampusView
-
-          echo "✅ Deployment Completed Successfully!"
+          git commit -m "Auto deploy from GitHub Actions" || echo "No changes to commit"
+          git push
